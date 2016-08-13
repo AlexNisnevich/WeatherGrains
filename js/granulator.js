@@ -30,13 +30,15 @@ function Granulator(file) {
   this.updateParamsWithWeather = function (weather) {
     console.log(weather);
 
-    // TODO: also try weather.main.humidity, weather.wind.speed, weather.wind,deg, etc.
+    // TODO: also try weather.wind.speed, weather.wind.deg, etc.
 
     self.params.detune = mapRange(weather.main.temp, 250, 310, -1200, 1200, true);
     self.params.interval = mapRange(weather.main.humidity, 0, 100, 0.5, 0.05);
+    self.params.attack = mapRange(weather.main.pressure, 900, 1100, 0.05, 0.5, true);
 
     console.log('Detune: ', self.params.detune);
     console.log('Interval: ', self.params.interval);
+    console.log('Attack: ', self.params.attack);
   }
 
   /* PRIVATE METHODS */

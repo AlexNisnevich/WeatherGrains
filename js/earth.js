@@ -27,7 +27,7 @@ $(function () {
   });
 
   // Set up earth.
-  var earth = new WE.map('earth', {sky: true, atmosphere: true, dragging: true, tilting: true, zoom: 2});
+  var earth = new WE.map('earth', {sky: true, atmosphere: true, dragging: true, tilting: true, zoom: 4});
   natural.addTo(earth);
   toner.addTo(earth);
 
