@@ -33,3 +33,15 @@ body {
   background-position: center center;
   background-image: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAABEAAAARCAYAAAA7bUf6AAAABHNCSVQICAgIfAhkiAAAAAlwSFlzAAALEwAACxMBAJqcGAAAABl0RVh0U29mdHdhcmUAd3d3Lmlua3NjYXBlLm9yZ5vuPBoAAAEhSURBVDiNrZQxTsNAEEXfLDSWRYjBBTSkSEOZgnCASBQ03IvrUKTiBKaClpIUKHJsIhRHKfCniBdMJCcKyZemmZ3/NNrdGZNEXWbmgAvgBDhN0/Q2juMhMKliJKmsew5XABHQB1o+FwRBDLSr6AKXZpZI+vA1rgboAoM6oEEtYFDV/0KqDnqAbQDUfb3KhzOzA+B6C4CXAX0zc/4Sj7YEeLWAjmP5Crso2gvExuPxfRiG500VQRCczefz96bzoigyA26A46ai2Wx2F4bhw5pOcsfyF+6ibG+QEfD5T8AUeHOSvoAE0AbDqkrgSVLpACTlwMsWoBJ49kP4M8WSXs1sAlyxfginQCJp6hN/VoGkzMwegQ4QAe3FYpECOZDRsE++AWYTYG33oiq+AAAAAElFTkSuQmCC);
 }
+
+#description {
+  width: 200px;
+  height: 100px;
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  margin: -30px auto auto 15px;
+  z-index: 1024;
+  pointer-events: none;
+  font-family: Futura, "Trebuchet MS", Helvetica, Arial, sans-serif;
+}

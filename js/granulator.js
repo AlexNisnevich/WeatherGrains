@@ -28,17 +28,15 @@ function Granulator(file) {
   };
 
   this.updateParamsWithWeather = function (weather) {
-    console.log(weather);
-
-    // TODO: also try weather.wind.speed, weather.wind.deg, etc.
-
     self.params.detune = mapRange(weather.main.temp, 273, 310, -1200, 1200, true);
     self.params.interval = mapRange(weather.main.humidity, 0, 100, 0.5, 0.05);
-    self.params.attack = mapRange(weather.main.pressure, 900, 1100, 0.05, 0.5, true);
+    self.params.release = mapRange(weather.main.pressure, 900, 1100, 0.05, 0.5, true);
+    self.params.attack = mapRange(weather.wind.speed, 1, 100, 0.05, 0.5, true);
 
     console.log('Detune: ', self.params.detune);
     console.log('Interval: ', self.params.interval);
     console.log('Attack: ', self.params.attack);
+    console.log('Release: ', self.params.release);
   }
 
   /* PRIVATE METHODS */
@@ -48,7 +46,7 @@ function Granulator(file) {
     self.playing = false;
     self.params = {
       'offset': 0.5,
-      'amplitude': 1,
+      'amplitude': 2,
       'attack': 0.05,
       'release': 0.05,
       'spread': 0.2,
@@ -94,18 +92,18 @@ function Granulator(file) {
 
     // Create a compressor node
     var compressorNode = context.createDynamicsCompressor();
-    compressorNode.threshold.value = -50;
-    compressorNode.knee.value = 40;
-    compressorNode.ratio.value = 12;
-    compressorNode.reduction.value = -20;
+    compressorNode.threshold.value = -70;
+    compressorNode.knee.value = 20;
+    compressorNode.ratio.value = 5;
+    compressorNode.reduction.value = 0;
     compressorNode.attack.value = 0;
-    compressorNode.release.value = 0.25;
+    compressorNode.release.value = 0.05;
     
     gainNode.connect(compressorNode);
     compressorNode.connect(masterNode);
 
     // Create a panner node (for better performance, only a random subset of grains is panned).
-    var isPanning = Math.random() < 0.3;
+    var isPanning = Math.random() < 0.5;
     if (isPanning) {
       var pannerNode = context.createPanner();
       pannerNode.panningModel = "equalpower";
