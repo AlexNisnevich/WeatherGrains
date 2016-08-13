@@ -32,7 +32,7 @@ function Granulator(file) {
 
     // TODO: also try weather.wind.speed, weather.wind.deg, etc.
 
-    self.params.detune = mapRange(weather.main.temp, 250, 310, -1200, 1200, true);
+    self.params.detune = mapRange(weather.main.temp, 273, 310, -1200, 1200, true);
     self.params.interval = mapRange(weather.main.humidity, 0, 100, 0.5, 0.05);
     self.params.attack = mapRange(weather.main.pressure, 900, 1100, 0.05, 0.5, true);
 
@@ -88,11 +88,22 @@ function Granulator(file) {
 
     // Create the gain node and set the envelope.
     var gainNode = context.createGain();
-    gainNode.connect(masterNode);
     gainNode.gain.setValueAtTime(0.0, now);
     gainNode.gain.linearRampToValueAtTime(params.amplitude, now + params.attack);
     gainNode.gain.linearRampToValueAtTime(0, now + params.attack + params.release);
+
+    // Create a compressor node
+    var compressorNode = context.createDynamicsCompressor();
+    compressorNode.threshold.value = -50;
+    compressorNode.knee.value = 40;
+    compressorNode.ratio.value = 12;
+    compressorNode.reduction.value = -20;
+    compressorNode.attack.value = 0;
+    compressorNode.release.value = 0.25;
     
+    gainNode.connect(compressorNode);
+    compressorNode.connect(masterNode);
+
     // Create a panner node (for better performance, only a random subset of grains is panned).
     var isPanning = Math.random() < 0.3;
     if (isPanning) {

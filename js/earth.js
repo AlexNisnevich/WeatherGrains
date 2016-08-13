@@ -1,7 +1,7 @@
 
 var appId = "033c9c2e06f99aef2fe57093880b686f";
 
-var granulator = new Granulator('audio/cello-a2.wav');
+var granulator = new Granulator('audio/birdsong1.wav');
 granulator.start();
 
 var lat = null, lng = null;
