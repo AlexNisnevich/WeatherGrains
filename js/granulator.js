@@ -15,7 +15,7 @@ function Granulator(file) {
         if (self.buffer) {
           trigger(self.buffer, self.params);
         }
-        setTimeout(playNext, self.params.interval);
+        setTimeout(playNext, self.params.interval * 1000);
       }
     }
 
@@ -32,10 +32,10 @@ function Granulator(file) {
 
     // TODO: also try weather.main.humidity, weather.wind.speed, weather.wind,deg, etc.
 
-    self.params.speed = Math.pow(2, mapRange(weather.main.temp, 250, 310, -1, 1));
-    self.params.interval = mapRange(weather.main.pressure, 900, 1100, 1000, 100);
+    self.params.detune = mapRange(weather.main.temp, 250, 310, -1200, 1200, true);
+    self.params.interval = mapRange(weather.main.humidity, 0, 100, 0.5, 0.05);
 
-    console.log('Speed: ', self.params.speed);
+    console.log('Detune: ', self.params.detune);
     console.log('Interval: ', self.params.interval);
   }
 
@@ -47,12 +47,12 @@ function Granulator(file) {
     self.params = {
       'offset': 0.5,
       'amplitude': 1,
-      'attack': 0.4,
-      'release': 0.4,
+      'attack': 0.05,
+      'release': 0.05,
       'spread': 0.2,
       'pan': 0.5,
-      'speed': 2,
-      'interval': 1000
+      'detune': 0,
+      'interval': 0.5
     };
 
     masterNode.connect(context.destination);
@@ -80,8 +80,9 @@ function Granulator(file) {
 
     // Create the source node.
     var sourceNode = context.createBufferSource();
-    sourceNode.playbackRate.value = sourceNode.playbackRate.value * params.speed;
+    sourceNode.playbackRate.value = sourceNode.playbackRate.value;
     sourceNode.buffer = buffer;
+    sourceNode.detune.value = params.detune;
 
     // Create the gain node and set the envelope.
     var gainNode = context.createGain();
@@ -102,10 +103,10 @@ function Granulator(file) {
       sourceNode.connect(gainNode);
     }
     
-    // Add a random offset and save the offset position.
+    // Add a random offset.
     var randomOffset = (Math.random() - 0.5) * params.spread;
     var offset = Math.min(Math.max(params.offset + randomOffset, 0), buffer.duration);
-    self.params.offset = offset;
+    // self.params.offset = offset;  // Uncomment to save the offset position each time.
 
     // Play the grain!
     var duration = params.attack + params.release;

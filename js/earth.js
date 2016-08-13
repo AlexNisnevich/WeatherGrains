@@ -1,7 +1,7 @@
 
 var appId = "033c9c2e06f99aef2fe57093880b686f";
 
-var granulator = new Granulator('audio/guitar.mp3');
+var granulator = new Granulator('audio/cello-a2.wav');
 granulator.start();
 
 var lat = null, lng = null;
@@ -31,9 +31,9 @@ $(function () {
   natural.addTo(earth);
   toner.addTo(earth);
 
-  // Poll location every second, checking weather and updating granulator params if the location has changed.
+  // Poll location on mouseup, checking weather and updating granulator params if the location has changed.
   checkWeather(earth, granulator.updateParamsWithWeather);
-  setInterval(function () {
+  $(document).mouseup(function () {
     checkWeather(earth, granulator.updateParamsWithWeather);
-  }, 1000);
+  });
 });
