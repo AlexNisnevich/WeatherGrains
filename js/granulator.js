@@ -58,16 +58,16 @@ function Granulator(file) {
     };
 
     masterNode.connect(context.destination);
-    loadAudioFileAsBuffer(file);
+    loadAudioFileAsBuffer(file, function (buffer) { self.buffer = buffer; });
   }
 
-  function loadAudioFileAsBuffer(file) {
+  function loadAudioFileAsBuffer(file, callback) {
     var request = new XMLHttpRequest();
     request.open('GET', file, true);
     request.responseType = "arraybuffer";
     request.onload = function(){
       context.decodeAudioData(request.response, function (buffer) {
-        self.buffer = buffer;
+        callback(buffer);
       },function(){
         console.log('Failed to load ' + file)
       });
@@ -101,8 +101,12 @@ function Granulator(file) {
     compressorNode.reduction.value = 0;
     compressorNode.attack.value = 0;
     compressorNode.release.value = 0.05;
+
+    var convolverNode = context.createConvolver();
+    loadAudioFileAsBuffer('audio/pistol-convolution.wav', function (buffer) { convolverNode.buffer = buffer; }); 
     
-    gainNode.connect(compressorNode);
+    gainNode.connect(convolverNode);
+    convolverNode.connect(compressorNode);
     compressorNode.connect(masterNode);
 
     // Create a panner node (for better performance, only a random subset of grains is panned).
