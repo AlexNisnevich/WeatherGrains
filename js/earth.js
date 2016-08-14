@@ -1,8 +1,11 @@
 
 var appId = "033c9c2e06f99aef2fe57093880b686f";
 
-var granulator = new Granulator('audio/cello-a2.wav');
-granulator.start();
+var granulators = new GranulatorEnsemble([
+  'audio/cello-a2.wav',
+  'audio/birdsong1.wav'
+]);
+granulators.start();
 
 var lat = null, lng = null;
 function checkWeather(earth, callback) {
@@ -29,7 +32,7 @@ function updateWeather(weather) {
   $('#description').html(description);
 
   // Update granulator.
-  granulator.updateParamsWithWeather(weather);
+  granulators.updateParamsWithWeather(weather);
 }
 
 $(function () {
@@ -67,4 +70,4 @@ $(function () {
     .mousedown(function () { $('#description').html(''); });
 });
 
-document.addEventListener("visibilitychange", function () {document.hidden ? granulator.stop() : granulator.start(); }, false);
+document.addEventListener("visibilitychange", function () {document.hidden ? granulators.stop() : granulators.start(); }, false);
