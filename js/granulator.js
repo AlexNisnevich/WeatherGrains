@@ -106,7 +106,7 @@ function Granulator(file) {
     compressorNode.connect(masterNode);
 
     // Create a panner node (for better performance, only a random subset of grains is panned).
-    var isPanning = Math.random() < 0.5;
+    var isPanning = (Math.random() < 0.33) && (params.pan > 0.05);
     if (isPanning) {
       var pannerNode = context.createPanner();
       var pan = (Math.random() - 0.5) * params.pan * 2;
