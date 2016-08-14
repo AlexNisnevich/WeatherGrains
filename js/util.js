@@ -8,6 +8,10 @@ function mapRange(value, low1, high1, low2, high2, clamp) {
   }
 }
 
+String.prototype.capitalize = function() {
+  return this.charAt(0).toUpperCase() + this.slice(1);
+}
+
 // http://www.ollysco.de/2012/04/gaussian-normal-functions-in-javascript.html
 /**
   * Returns a Gaussian Random Number around a normal distribution defined by the mean

@@ -20,9 +20,12 @@ function updateWeather(weather) {
   console.log(weather);
 
   // Update description.
-  var description = "<strong>" + weather.name + "</strong>" + "<br>" + (weather.main.temp - 273.15).toFixed(1) + "&deg;C" +
+  var description = "<strong>" + weather.name + "</strong>" + 
+      "<br>" + weather.weather[0].description.capitalize() +
+      "<br>" + (weather.main.temp - 273.15).toFixed(1) + "&deg;C" +
       "<br>" + "Pressure: " + Math.round(weather.main.pressure) + " hPa" + 
       "<br>" + "Humidity: " + weather.main.humidity + "%";
+      // "<br>" + "Wind: " + Math.round(weather.wind.speed) + " m/s";
   $('#description').html(description);
 
   // Update granulator.

@@ -30,13 +30,15 @@ function Granulator(file) {
   this.updateParamsWithWeather = function (weather) {
     self.params.detune = mapRange(weather.main.temp, 273, 310, -1200, 1200, true);
     self.params.interval = mapRange(weather.main.humidity, 0, 100, 0.5, 0.05);
-    self.params.release = mapRange(weather.main.pressure, 900, 1100, 0.1, 0.5, true);
-    self.params.attack = mapRange(weather.wind.speed, 1, 100, 0.1, 0.5, true);
+    self.params.attack = mapRange(weather.wind.speed, 0, 50, 0.1, 0.5, true);
+    self.params.release = mapRange(weather.main.pressure, 900, 1100, 0.2, 0.6, true);
+    self.params.pan = mapRange(weather.clouds.all, 0, 100, 0, 1);
 
     console.log('Detune: ', self.params.detune);
     console.log('Interval: ', self.params.interval);
     console.log('Attack: ', self.params.attack);
     console.log('Release: ', self.params.release);
+    console.log('Pan: ', self.params.pan);
   }
 
   /* PRIVATE METHODS */
@@ -49,7 +51,7 @@ function Granulator(file) {
       'amplitude': 2,
       'attack': 0.05,
       'release': 0.05,
-      'spread': 0.2,
+      'spread': 0.05,
       'pan': 0.5,
       'detune': 0,
       'interval': 0.5
@@ -117,7 +119,7 @@ function Granulator(file) {
     }
     
     // Add a random offset.
-    var randomOffset = (Math.random() - 0.5) * params.spread;
+    var randomOffset = (Math.random() - 0.5) * params.spread * buffer.duration;
     var offset = Math.min(Math.max(params.offset + randomOffset, 0), buffer.duration);
     // self.params.offset = offset;  // Uncomment to save the offset position each time.
 
