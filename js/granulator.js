@@ -30,8 +30,8 @@ function Granulator(file) {
   this.updateParamsWithWeather = function (weather) {
     self.params.detune = mapRange(weather.main.temp, 273, 310, -1200, 1200, true);
     self.params.interval = mapRange(weather.main.humidity, 0, 100, 0.5, 0.05);
-    self.params.release = mapRange(weather.main.pressure, 900, 1100, 0.05, 0.5, true);
-    self.params.attack = mapRange(weather.wind.speed, 1, 100, 0.05, 0.5, true);
+    self.params.release = mapRange(weather.main.pressure, 900, 1100, 0.1, 0.5, true);
+    self.params.attack = mapRange(weather.wind.speed, 1, 100, 0.1, 0.5, true);
 
     console.log('Detune: ', self.params.detune);
     console.log('Interval: ', self.params.interval);
@@ -82,13 +82,14 @@ function Granulator(file) {
     var sourceNode = context.createBufferSource();
     sourceNode.playbackRate.value = sourceNode.playbackRate.value;
     sourceNode.buffer = buffer;
-    sourceNode.detune.value = params.detune;
+    sourceNode.detune.value = params.detune + Math.randomGaussian(0.0, 10.0);
 
     // Create the gain node and set the envelope.
+    var amplitude = params.amplitude * Math.randomGaussian(1.0, 0.25);
     var gainNode = context.createGain();
     gainNode.gain.setValueAtTime(0.0, now);
-    gainNode.gain.linearRampToValueAtTime(params.amplitude, now + params.attack);
-    gainNode.gain.linearRampToValueAtTime(0, now + params.attack + params.release);
+    gainNode.gain.linearRampToValueAtTime(amplitude, now + params.attack);
+    gainNode.gain.linearRampToValueAtTime(0.0, now + params.attack + params.release);
 
     // Create a compressor node
     var compressorNode = context.createDynamicsCompressor();
@@ -106,9 +107,10 @@ function Granulator(file) {
     var isPanning = Math.random() < 0.5;
     if (isPanning) {
       var pannerNode = context.createPanner();
+      var pan = (Math.random() - 0.5) * params.pan * 2;
       pannerNode.panningModel = "equalpower";
       pannerNode.distanceModel = "linear";
-      pannerNode.setPosition((Math.random() - 0.5) * params.pan * 2, 0, 0);
+      pannerNode.setPosition(pan, 0, 0);
       sourceNode.connect(pannerNode); pannerNode.connect(gainNode);
     } else {
       sourceNode.connect(gainNode);

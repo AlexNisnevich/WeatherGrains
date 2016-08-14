@@ -20,7 +20,7 @@ function updateWeather(weather) {
   console.log(weather);
 
   // Update description.
-  var description = weather.name + "<br>" + (weather.main.temp - 273.15).toFixed(1) + "&deg;C" + 
+  var description = "<strong>" + weather.name + "</strong>" + "<br>" + (weather.main.temp - 273.15).toFixed(1) + "&deg;C" +
       "<br>" + "Pressure: " + Math.round(weather.main.pressure) + " hPa" + 
       "<br>" + "Humidity: " + weather.main.humidity + "%";
   $('#description').html(description);
@@ -59,7 +59,9 @@ $(function () {
 
   // Poll location on mouseup, checking weather and updating granulator params if the location has changed.
   checkWeather(earth, updateWeather);
-  $(document).mouseup(function () {
-    checkWeather(earth, updateWeather);
-  });
+  $(document)
+    .mouseup(function () { checkWeather(earth, updateWeather); })
+    .mousedown(function () { $('#description').html(''); });
 });
+
+document.addEventListener("visibilitychange", function () {document.hidden ? granulator.stop() : granulator.start(); }, false);
