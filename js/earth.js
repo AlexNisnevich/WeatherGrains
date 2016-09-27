@@ -3,7 +3,9 @@ var appId = "033c9c2e06f99aef2fe57093880b686f";
 
 var granulators = new GranulatorEnsemble([
   'audio/cello-a2.wav',
-  'audio/birdsong1.wav'
+  'audio/birdsong1.wav',
+  'audio/violin-a4.wav',
+  'audio/marimba.wav'
 ]);
 granulators.start();
 

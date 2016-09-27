@@ -29,10 +29,10 @@ function Granulator(file) {
 
   this.updateParamsWithWeather = function (weather) {
     self.params.detune = mapRange(weather.main.temp, 273, 310, -1200, 1200, true);
-    self.params.interval = mapRange(weather.main.humidity, 0, 100, 0.5, 0.05);
-    self.params.attack = mapRange(weather.wind.speed, 0, 50, 0.1, 0.5, true);
-    self.params.release = mapRange(weather.main.pressure, 900, 1100, 0.2, 0.6, true);
-    self.params.pan = mapRange(weather.clouds.all, 0, 100, 0, 1);
+    self.params.release = mapRange(weather.main.humidity, 0, 100, 0.05, 0.5);
+    self.params.attack = mapRange(weather.wind.speed, 0, 50, 0.5, 0.05, true);
+    self.params.interval = mapRange(weather.main.pressure, 900, 1100, 0.05, 0.5, true);
+    self.params.pan = 0.5; // mapRange(weather.clouds.all, 0, 100, 0, 1);
 
     console.log('Detune: ', self.params.detune);
     console.log('Interval: ', self.params.interval);
