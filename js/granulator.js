@@ -5,6 +5,19 @@ function Granulator(file) {
   var context = new AudioContext();
   var masterNode = context.createGain();
 
+  // Preprocess HRTF file.
+  var _hrtfs = hrtfs;
+  for (var i = 0; i < _hrtfs.length; i++) {
+    var buffer = context.createBuffer(2, 512, 44100);
+    var bufferChannelLeft = buffer.getChannelData(0);
+    var bufferChannelRight = buffer.getChannelData(1);
+    for (var e = 0; e < _hrtfs[i].fir_coeffs_left.length; e++) {
+      bufferChannelLeft[e] = _hrtfs[i].fir_coeffs_left[e];
+      bufferChannelRight[e] = _hrtfs[i].fir_coeffs_right[e];
+    }
+    _hrtfs[i].buffer = buffer;
+  }
+
   initialize();
 
   /* PUBLIC METHODS */
@@ -33,8 +46,8 @@ function Granulator(file) {
     self.params.attack = mapRange(weather.wind.speed, 0, 50, 0.5, 0.05, true);
     self.params.interval = mapRange(weather.main.pressure, 900, 1100, 0.05, 0.5, true);
     self.params.spread = mapRange(weather.wind.deg, 0, 360, 0.0, 0.1);
-    self.params.randomization = mapRange(weather.clouds.all, 0, 100, 0, 3) || 0;
-    self.params.pan = 0.5; // mapRange(weather.clouds.all, 0, 100, 0, 1);
+    self.params.randomization = mapRange(weather.clouds.all, 0, 100, 0, 3);
+    self.params.azimuth = weather.wind.deg;
 
     //console.log('Detune: ', self.params.detune);
     //console.log('Interval: ', self.params.interval);
@@ -56,7 +69,8 @@ function Granulator(file) {
       'spread': 0.05,
       'pan': 0.5,
       'detune': 0,
-      'interval': 0.5
+      'interval': 0.5,
+      'azimuth': 0
     };
 
     masterNode.connect(context.destination);
@@ -82,8 +96,8 @@ function Granulator(file) {
   function trigger(buffer, params) {
     var now = context.currentTime;
 
-    var grainAttack = self.params.attack * Math.pow(2, self.params.randomization * (Math.random() - 0.5));
-    var grainRelease = self.params.release * Math.pow(2, self.params.randomization * (Math.random() - 0.5));
+    var grainAttack = params.attack * Math.pow(2, params.randomization * (Math.random() - 0.5));
+    var grainRelease = params.release * Math.pow(2, params.randomization * (Math.random() - 0.5));
 
     // Create the source node.
     var sourceNode = context.createBufferSource();
@@ -98,7 +112,12 @@ function Granulator(file) {
     gainNode.gain.linearRampToValueAtTime(amplitude, now + grainAttack);
     gainNode.gain.linearRampToValueAtTime(0.0, now + grainAttack + grainRelease);
 
-    // Create a compressor node
+    // Create a binauralFIR node.
+    var binauralFIRNode = new BinauralFIR({'audioContext': context});
+    binauralFIRNode.HRTFDataset = _hrtfs;
+    binauralFIRNode.setPosition(params.azimuth, 0, 1);
+
+    // Create a compressor node.
     var compressorNode = context.createDynamicsCompressor();
     compressorNode.threshold.value = -70;
     compressorNode.knee.value = 20;
@@ -107,21 +126,11 @@ function Granulator(file) {
     compressorNode.attack.value = 0;
     compressorNode.release.value = 0.05;
 
-    gainNode.connect(compressorNode);
+    // Link them all together.
+    sourceNode.connect(gainNode);
+    gainNode.connect(binauralFIRNode.input);
+    binauralFIRNode.connect(compressorNode);
     compressorNode.connect(masterNode);
-
-    // Create a panner node (for better performance, only a random subset of grains is panned).
-    var isPanning = (Math.random() < 0.33) && (params.pan > 0.05);
-    if (isPanning) {
-      var pannerNode = context.createPanner();
-      var pan = (Math.random() - 0.5) * params.pan * 2;
-      pannerNode.panningModel = "equalpower";
-      pannerNode.distanceModel = "linear";
-      pannerNode.setPosition(pan, 0, 0);
-      sourceNode.connect(pannerNode); pannerNode.connect(gainNode);
-    } else {
-      sourceNode.connect(gainNode);
-    }
 
     // Add a random offset.
     var randomOffset = (Math.random() - 0.5) * params.spread * buffer.duration;
@@ -135,9 +144,6 @@ function Granulator(file) {
     // Garbage collection.
     setTimeout(function () {
       gainNode.disconnect();
-      if (isPanning) {
-        pannerNode.disconnect();
-      }
     }, (grainAttack + grainRelease + 0.1) * 1000);
   }
 }
