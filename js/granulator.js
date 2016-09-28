@@ -28,19 +28,19 @@ function Granulator(file) {
   };
 
   this.updateParamsWithWeather = function (weather) {
-    self.params.randomization = mapRange(weather.clouds.all, 0, 100, -0.1, 0.1);
     self.params.detune = mapRange(weather.main.temp, 273, 310, -1200, 1200, true);
     self.params.release = mapRange(weather.main.humidity, 0, 100, 0.05, 0.5);
     self.params.attack = mapRange(weather.wind.speed, 0, 50, 0.5, 0.05, true);
     self.params.interval = mapRange(weather.main.pressure, 900, 1100, 0.05, 0.5, true);
     self.params.spread = mapRange(weather.wind.deg, 0, 360, 0.0, 0.1);
+    self.params.randomization = mapRange(weather.clouds.all, 0, 100, 0, 5) || 0;
     self.params.pan = 0.5; // mapRange(weather.clouds.all, 0, 100, 0, 1);
 
-    console.log('Detune: ', self.params.detune);
-    console.log('Interval: ', self.params.interval);
-    console.log('Attack: ', self.params.attack);
-    console.log('Release: ', self.params.release);
-    console.log('Pan: ', self.params.pan);
+    //console.log('Detune: ', self.params.detune);
+    //console.log('Interval: ', self.params.interval);
+    //console.log('Attack: ', self.params.attack);
+    //console.log('Release: ', self.params.release);
+    //console.log('Pan: ', self.params.pan);
   }
 
   /* PRIVATE METHODS */
@@ -78,12 +78,12 @@ function Granulator(file) {
   }
 
   // Play a grain once.
-  // [based on https://github.com/zya/granular] 
+  // [based on https://github.com/zya/granular]
   function trigger(buffer, params) {
     var now = context.currentTime;
 
-    var grainAttack = self.params.attack + self.params.randomization * Math.random();
-    var grainRelease = self.params.release + self.params.randomization * Math.random();
+    var grainAttack = self.params.attack * Math.pow(2, self.params.randomization * (Math.random() - 0.5));
+    var grainRelease = self.params.release * Math.pow(2, self.params.randomization * (Math.random() - 0.5));
 
     // Create the source node.
     var sourceNode = context.createBufferSource();
@@ -96,7 +96,7 @@ function Granulator(file) {
     var gainNode = context.createGain();
     gainNode.gain.setValueAtTime(0.0, now);
     gainNode.gain.linearRampToValueAtTime(amplitude, now + grainAttack);
-    gainNode.gain.linearRampToValueAtTime(0.0, now + grainAttack + grainRelease;
+    gainNode.gain.linearRampToValueAtTime(0.0, now + grainAttack + grainRelease);
 
     // Create a compressor node
     var compressorNode = context.createDynamicsCompressor();
@@ -106,7 +106,7 @@ function Granulator(file) {
     compressorNode.reduction.value = 0;
     compressorNode.attack.value = 0;
     compressorNode.release.value = 0.05;
-    
+
     gainNode.connect(compressorNode);
     compressorNode.connect(masterNode);
 
@@ -122,7 +122,7 @@ function Granulator(file) {
     } else {
       sourceNode.connect(gainNode);
     }
-    
+
     // Add a random offset.
     var randomOffset = (Math.random() - 0.5) * params.spread * buffer.duration;
     var offset = Math.min(Math.max(params.offset + randomOffset, 0), buffer.duration);
