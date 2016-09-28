@@ -28,7 +28,7 @@ function Granulator(file) {
   };
 
   this.updateParamsWithWeather = function (weather) {
-    self.params.randomization = mapRange(weather.clouds.all, 0, 100, -0.1, 0.1)
+    self.params.randomization = mapRange(weather.clouds.all, 0, 100, -0.1, 0.1);
     self.params.detune = mapRange(weather.main.temp, 273, 310, -1200, 1200, true);
     self.params.release = mapRange(weather.main.humidity, 0, 100, 0.05, 0.5);
     self.params.attack = mapRange(weather.wind.speed, 0, 50, 0.5, 0.05, true);
