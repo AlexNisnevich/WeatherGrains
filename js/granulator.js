@@ -45,7 +45,7 @@ function Granulator(file) {
     self.params.release = mapRange(weather.main.humidity, 0, 100, 0.05, 0.5);
     self.params.attack = mapRange(weather.wind.speed, 0, 50, 0.5, 0.05, true);
     self.params.interval = mapRange(weather.main.pressure, 900, 1100, 0.05, 0.5, true);
-    self.params.spread = mapRange(weather.wind.deg, 0, 360, 0.0, 0.1);
+    self.params.spread = mapRange(weather.clouds.all, 0, 100, 0.0, 0.1);
     self.params.randomization = mapRange(weather.clouds.all, 0, 100, 0, 3);
     self.params.azimuth = weather.wind.deg;
 
