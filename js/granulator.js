@@ -91,7 +91,7 @@ function Granulator(opts) {
     var sourceNode = context.createBufferSource();
     sourceNode.playbackRate.value = sourceNode.playbackRate.value;
     sourceNode.buffer = buffer;
-    sourceNode.detune.value = params.detune + Math.randomGaussian(0.0, 10.0);
+    sourceNode.detune.value = params.detune + Math.randomGaussian(0.0, 1.0);
 
     // Create the gain node and set the envelope.
     var amplitude = params.amplitude * Math.randomGaussian(1.0, 0.25);
