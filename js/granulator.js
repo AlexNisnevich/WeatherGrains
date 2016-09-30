@@ -42,11 +42,11 @@ function Granulator(file) {
 
   this.updateParamsWithWeather = function (weather) {
     self.params.detune = mapRange(weather.main.temp, 273, 310, -1200, 1200, true);
-    self.params.release = mapRange(weather.main.humidity, 0, 100, 0.05, 0.5);
+    self.params.release = mapRange(weather.main.humidity, 0, 100, 0.1, 0.5);
     self.params.attack = mapRange(weather.wind.speed, 0, 50, 0.5, 0.05, true);
-    self.params.interval = mapRange(weather.main.pressure, 900, 1100, 0.05, 0.5, true);
-    self.params.spread = mapRange(weather.clouds.all, 0, 100, 0.0, 0.1);
-    self.params.randomization = mapRange(weather.clouds.all, 0, 100, 0, 3);
+    self.params.interval = mapRange(weather.clouds.all, 0, 100, 0.5, 0.1);
+    self.params.spread = mapRange(weather.main.pressure, 700, 1100, 0.01, 0.1, true);
+    self.params.randomization = mapRange(weather.sys.sunset - weather.sys.sunrise, 0, 86400, 0, 0.25);
     self.params.azimuth = weather.wind.deg;
 
     //console.log('Detune: ', self.params.detune);
@@ -103,7 +103,7 @@ function Granulator(file) {
     var sourceNode = context.createBufferSource();
     sourceNode.playbackRate.value = sourceNode.playbackRate.value;
     sourceNode.buffer = buffer;
-    sourceNode.detune.value = params.detune + Math.randomGaussian(0.0, 10.0);
+    sourceNode.detune.value = params.detune + Math.randomGaussian(0.0, 1.0);
 
     // Create the gain node and set the envelope.
     var amplitude = params.amplitude * Math.randomGaussian(1.0, 0.25);
