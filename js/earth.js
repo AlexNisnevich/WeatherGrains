@@ -1,13 +1,8 @@
 
 var appId = "033c9c2e06f99aef2fe57093880b686f";
 
-var granulators = new GranulatorEnsemble([
-  'audio/cello-a2.wav',
-  'audio/birdsong1.wav',
-  'audio/violin-a4.wav',
-  'audio/marimba.wav'
-]);
-granulators.start();
+var ensemble = new GranulatorEnsemble(granulators);
+ensemble.start();
 
 var lat = null, lng = null;
 function checkWeather(earth, callback) {
@@ -25,16 +20,16 @@ function updateWeather(weather) {
   console.log(weather);
 
   // Update description.
-  var description = "<strong>" + weather.name + "</strong>" + 
+  var description = "<strong>" + weather.name + "</strong>" +
       "<br>" + weather.weather[0].description.capitalize() +
       "<br>" + (weather.main.temp - 273.15).toFixed(1) + "&deg;C" +
-      "<br>" + "Pressure: " + Math.round(weather.main.pressure) + " hPa" + 
+      "<br>" + "Pressure: " + Math.round(weather.main.pressure) + " hPa" +
       "<br>" + "Humidity: " + weather.main.humidity + "%";
       // "<br>" + "Wind: " + Math.round(weather.wind.speed) + " m/s";
   $('#description').html(description);
 
-  // Update granulator.
-  granulators.updateParamsWithWeather(weather);
+  // Update granulator ensemble.
+  ensemble.updateParamsWithWeather(weather);
 }
 
 $(function () {
@@ -72,4 +67,4 @@ $(function () {
     .mousedown(function () { $('#description').html(''); });
 });
 
-document.addEventListener("visibilitychange", function () {document.hidden ? granulators.stop() : granulators.start(); }, false);
+document.addEventListener("visibilitychange", function () {document.hidden ? ensemble.stop() : ensemble.start(); }, false);

@@ -1,6 +1,6 @@
 window.AudioContext = window.AudioContext || window.webkitAudioContext || window.mozAudioContext || window.oAudioContext;
 
-function Granulator(file) {
+function Granulator(opts) {
   var self = this;
   var context = new AudioContext();
   var masterNode = context.createGain();
@@ -41,19 +41,7 @@ function Granulator(file) {
   };
 
   this.updateParamsWithWeather = function (weather) {
-    self.params.detune = mapRange(weather.main.temp, 273, 310, -1200, 1200, true);
-    self.params.release = mapRange(weather.main.humidity, 0, 100, 0.1, 0.5);
-    self.params.attack = mapRange(weather.wind.speed, 0, 50, 0.5, 0.05, true);
-    self.params.interval = mapRange(weather.clouds.all, 0, 100, 0.5, 0.1);
-    self.params.spread = mapRange(weather.main.pressure, 700, 1100, 0.01, 0.1, true);
-    self.params.randomization = mapRange(weather.sys.sunset - weather.sys.sunrise, 0, 86400, 0, 0.25);
-    self.params.azimuth = weather.wind.deg;
-
-    //console.log('Detune: ', self.params.detune);
-    //console.log('Interval: ', self.params.interval);
-    //console.log('Attack: ', self.params.attack);
-    //console.log('Release: ', self.params.release);
-    //console.log('Pan: ', self.params.pan);
+    opts.paramsFromWeather(self.params, weather);
   }
 
   /* PRIVATE METHODS */
@@ -74,7 +62,7 @@ function Granulator(file) {
     };
 
     masterNode.connect(context.destination);
-    loadAudioFileAsBuffer(file);
+    loadAudioFileAsBuffer(opts.file);
   }
 
   function loadAudioFileAsBuffer(file) {

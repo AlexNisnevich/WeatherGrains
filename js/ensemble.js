@@ -1,6 +1,6 @@
 
-function GranulatorEnsemble(files) {
-  var granulators = files.map(function (file) { return new Granulator(file); });
+function GranulatorEnsemble(granulatorOpts) {
+  var granulators = granulatorOpts.map(function (g) { return new Granulator(g); });
 
   this.start = function () {
     granulators.forEach(function (g) { g.start(); });
