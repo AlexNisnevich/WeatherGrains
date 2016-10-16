@@ -1,5 +1,9 @@
 window.AudioContext = window.AudioContext || window.webkitAudioContext || window.mozAudioContext || window.oAudioContext;
 
+var globalOptions = {
+  binaural: false
+};
+
 function Granulator(opts) {
   var self = this;
   var context = new AudioContext();
@@ -102,9 +106,11 @@ function Granulator(opts) {
     gainNode.gain.linearRampToValueAtTime(0.0, now + grainAttack + grainRelease);
 
     // Create a binauralFIR node.
-    var binauralFIRNode = new BinauralFIR({'audioContext': context});
-    binauralFIRNode.HRTFDataset = _hrtfs;
-    binauralFIRNode.setPosition(params.azimuth, 0, 1);
+    if (globalOptions.binaural) {
+      var binauralFIRNode = new BinauralFIR({'audioContext': context});
+      binauralFIRNode.HRTFDataset = _hrtfs;
+      binauralFIRNode.setPosition(params.azimuth, 0, 1);
+    }
 
     // Create a compressor node.
     var compressorNode = context.createDynamicsCompressor();
@@ -117,8 +123,12 @@ function Granulator(opts) {
 
     // Link them all together.
     sourceNode.connect(gainNode);
-    gainNode.connect(binauralFIRNode.input);
-    binauralFIRNode.connect(compressorNode);
+    if (globalOptions.binaural) {
+      gainNode.connect(binauralFIRNode.input);
+      binauralFIRNode.connect(compressorNode);
+    } else {
+      gainNode.connect(compressorNode);
+    }
     compressorNode.connect(masterNode);
 
     // Add a random offset.
