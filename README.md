@@ -1,4 +1,4 @@
-# earth-granulator
+# WeatherGrains
 
 Uses granular synthesis to generate music based on weather at different points on the globe.
 
