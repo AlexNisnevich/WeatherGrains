@@ -51,13 +51,14 @@ function Granulator(opts) {
     self.playing = false;
     self.params = {
       'offset': 0.5,
-      'amplitude': 2,
+      'amplitude': 1,
       'attack': 0.05,
       'release': 0.05,
       'spread': 0.05,
       'pan': 0.5,
       'detune': 0,
       'interval': 0.5,
+      'randomization': 0.01,
       'azimuth': 0
     };
 
