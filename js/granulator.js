@@ -56,8 +56,8 @@ function Granulator(opts) {
     self.params = {
       'offset': 0.5,
       'amplitude': 1,
-      'attack': 0.05,
-      'release': 0.05,
+      'attack': 0.1,
+      'release': 0.5,
       'spread': 0.05,
       'pan': 0.5,
       'detune': 0,
@@ -89,8 +89,11 @@ function Granulator(opts) {
   function trigger(buffer, params) {
     var now = context.currentTime;
 
-    var grainAttack = params.attack * Math.pow(2, params.randomization * (Math.random() - 0.5));
-    var grainRelease = params.release * Math.pow(2, params.randomization * (Math.random() - 0.5));
+    // var grainAttack = params.attack * Math.pow(2, params.randomization * (Math.random() - 0.5));
+    // var grainRelease = params.release * Math.pow(2, params.randomization * (Math.random() - 0.5));
+
+    var grainAttack = params.attack * Math.randomGaussian(1.0, params.randomization);
+    var grainRelease = params.release * Math.randomGaussian(1.0, params.randomization);
 
     // Create the source node.
     var sourceNode = context.createBufferSource();
@@ -132,7 +135,8 @@ function Granulator(opts) {
     compressorNode.connect(masterNode);
 
     // Add a random offset.
-    var randomOffset = (Math.random() - 0.5) * params.spread * buffer.duration;
+    // var randomOffset = (Math.random() - 0.5) * params.spread * buffer.duration;
+    var randomOffset = Math.randomGaussian(0.0, 0.5) * params.spread * buffer.duration;
     var offset = Math.min(Math.max(params.offset + randomOffset, 0), buffer.duration);
     // self.params.offset = offset;  // Uncomment to save the offset position each time.
 
