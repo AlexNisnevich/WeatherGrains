@@ -63,6 +63,7 @@ function Granulator(opts) {
       'detune': 0,
       'interval': 0.5,
       'randomization': 0.01,
+      'range': 0.333,
       'azimuth': 0
     };
 
@@ -102,7 +103,11 @@ function Granulator(opts) {
     sourceNode.detune.value = params.detune + Math.randomGaussian(0.0, 1.0);
 
     // Create the gain node and set the envelope.
-    var amplitude = params.amplitude * Math.randomGaussian(1.0, 0.25);
+    if (params.amplitude > 0) {
+      var amplitude = params.amplitude * Math.randomGaussian(1.0, params.range);
+    } else {
+      var amplitude = 0;
+    };
     var gainNode = context.createGain();
     gainNode.gain.setValueAtTime(0.0, now);
     gainNode.gain.linearRampToValueAtTime(amplitude, now + grainAttack);
