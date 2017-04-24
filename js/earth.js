@@ -20,13 +20,13 @@ function updateWeather(weather) {
   console.log(weather);
 
   // Update description.
-  var description = "<strong>" + weather.name + "</strong>" +
-      "<br>" + weather.weather[0].description.capitalize() +
+  var description = (weather.name ? ("<strong>" + weather.name + "</strong><br>") : "") +
+      weather.weather[0].description.capitalize() +
       "<br>" + (weather.main.temp - 273.15).toFixed(1) + "&deg;C" +
       "<br>" + "Pressure: " + Math.round(weather.main.pressure) + " hPa" +
       "<br>" + "Humidity: " + weather.main.humidity + "%";
       // "<br>" + "Wind: " + Math.round(weather.wind.speed) + " m/s";
-  $('#description').html(description);
+  $('#description').show().html(description);
 
   // Update granulator ensemble.
   ensemble.updateParamsWithWeather(weather);
@@ -64,7 +64,7 @@ $(function () {
   checkWeather(earth, updateWeather);
   $(document)
     .on('pointerup', function () { checkWeather(earth, updateWeather); })
-    .on('pointerdown', function () { $('#description').html(''); });
+    .on('pointerdown', function () { $('#description').hide(); });
 });
 
 document.addEventListener("visibilitychange", function () {document.hidden ? ensemble.stop() : ensemble.start(); }, false);

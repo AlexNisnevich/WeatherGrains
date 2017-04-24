@@ -3,7 +3,7 @@ html {
 	height: 100%;
 	padding: 0;
 	margin: 0;
-	overflow: hidden; 
+	overflow: hidden;
 }
 
 body {
@@ -36,7 +36,6 @@ body {
 
 #description {
   width: 200px;
-  height: 100px;
   position: absolute;
   top: 50%;
   left: 50%;
@@ -45,4 +44,6 @@ body {
   pointer-events: none;
   font-family: Futura, "Trebuchet MS", Helvetica, Arial, sans-serif;
   color: #2d8015;
+  background-color: rgba(255,255,255,0.6);
+  padding: 10px 6px;
 }
