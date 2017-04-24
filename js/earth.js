@@ -63,8 +63,8 @@ $(function () {
   // Poll location on mouseup, checking weather and updating granulator params if the location has changed.
   checkWeather(earth, updateWeather);
   $(document)
-    .mouseup(function () { checkWeather(earth, updateWeather); })
-    .mousedown(function () { $('#description').html(''); });
+    .on('pointerup', function () { checkWeather(earth, updateWeather); })
+    .on('pointerdown', function () { $('#description').html(''); });
 });
 
 document.addEventListener("visibilitychange", function () {document.hidden ? ensemble.stop() : ensemble.start(); }, false);
