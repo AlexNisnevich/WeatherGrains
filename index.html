@@ -4,8 +4,9 @@
 	<head>
 		<!-- JS Libs -->
 		<script src="https://code.jquery.com/pep/0.4.2/pep.js"></script>
-		<script src="lib/js/jquery-1.10.1.js"></script>
 		<script src="//www.webglearth.com/v2/api.js"></script>
+		<script src="lib/js/jquery-1.10.1.js"></script>
+		<script src="lib/js/wavy-jones.js"></script>
 		<!--
 			<script src="lib/js/binaural-fir.min.js"></script>
 			<script src="lib/js/complete_hrtfs.js"></script> -->
@@ -15,7 +16,6 @@
 		<script src="js/granulator.js"></script>
 		<script src="js/ensemble.js"></script>
 		<script src="js/granulators.js"></script>
-		<script src="js/earth.js"></script>
 		<link rel="stylesheet" href="css/style.css">
 	</head>
 	<body>
@@ -24,7 +24,11 @@
 		</a>
 		<div id="earth">
 			<div class="cross"></div>
-			<div id="description"></div>
 		</div>
+		<div id="description" style="position: relative">
+			<div id="descriptionText"></div>
+			<div id="oscilloscope"></div>
+		</div>
+		<script src="js/earth.js"></script>
 	</body>
 </html>

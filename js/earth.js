@@ -20,13 +20,14 @@ function updateWeather(weather) {
   console.log(weather);
 
   // Update description.
-  var description = (weather.name ? ("<strong>" + weather.name + "</strong><br>") : "") +
+  var description = "<strong>" + (weather.name || "Unknown Station") + "</strong><br>" +
       weather.weather[0].description.capitalize() +
       "<br>" + (weather.main.temp - 273.15).toFixed(1) + "&deg;C" +
       "<br>" + "Pressure: " + Math.round(weather.main.pressure) + " hPa" +
       "<br>" + "Humidity: " + weather.main.humidity + "%";
       // "<br>" + "Wind: " + Math.round(weather.wind.speed) + " m/s";
-  $('#description').show().html(description);
+  $('#descriptionText').html(description);
+  $('#description').show()
 
   // Update granulator ensemble.
   ensemble.updateParamsWithWeather(weather);

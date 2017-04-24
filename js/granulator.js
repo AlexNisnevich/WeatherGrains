@@ -8,6 +8,7 @@ function Granulator(opts) {
   var self = this;
   var context = new AudioContext();
   var masterNode = context.createGain();
+  var wavyJones = new WavyJones(context, 'oscilloscope', opts.color);
 
   // Preprocess HRTF file.
   if (typeof hrtfs !== 'undefined') {
@@ -139,7 +140,8 @@ function Granulator(opts) {
     } else {
       gainNode.connect(compressorNode);
     }
-    compressorNode.connect(masterNode);
+    compressorNode.connect(wavyJones);
+    wavyJones.connect(masterNode);
 
     // Add a random offset.
     // var randomOffset = (Math.random() - 0.5) * params.spread * buffer.duration;

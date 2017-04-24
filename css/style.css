@@ -47,3 +47,13 @@ body {
   background-color: rgba(255,255,255,0.6);
   padding: 10px 6px;
 }
+
+#oscilloscope {
+  width: 200px;
+  height: 200px;
+  position: absolute;
+  top: -40px;
+  left: 6px;
+  opacity: 0.4;
+}
+
