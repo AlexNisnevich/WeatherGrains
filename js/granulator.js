@@ -10,16 +10,18 @@ function Granulator(opts) {
   var masterNode = context.createGain();
 
   // Preprocess HRTF file.
-  var _hrtfs = hrtfs;
-  for (var i = 0; i < _hrtfs.length; i++) {
-    var buffer = context.createBuffer(2, 512, 44100);
-    var bufferChannelLeft = buffer.getChannelData(0);
-    var bufferChannelRight = buffer.getChannelData(1);
-    for (var e = 0; e < _hrtfs[i].fir_coeffs_left.length; e++) {
-      bufferChannelLeft[e] = _hrtfs[i].fir_coeffs_left[e];
-      bufferChannelRight[e] = _hrtfs[i].fir_coeffs_right[e];
+  if (typeof hrtfs !== 'undefined') {
+    var _hrtfs = hrtfs;
+    for (var i = 0; i < _hrtfs.length; i++) {
+      var buffer = context.createBuffer(2, 512, 44100);
+      var bufferChannelLeft = buffer.getChannelData(0);
+      var bufferChannelRight = buffer.getChannelData(1);
+      for (var e = 0; e < _hrtfs[i].fir_coeffs_left.length; e++) {
+        bufferChannelLeft[e] = _hrtfs[i].fir_coeffs_left[e];
+        bufferChannelRight[e] = _hrtfs[i].fir_coeffs_right[e];
+      }
+      _hrtfs[i].buffer = buffer;
     }
-    _hrtfs[i].buffer = buffer;
   }
 
   initialize();
