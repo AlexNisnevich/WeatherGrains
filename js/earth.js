@@ -34,14 +34,9 @@ function updateWeather(weather) {
 }
 
 $(function () {
-  // Set up tile layers.
-  var natural = WE.tileLayer('http://data.webglearth.com/natural-earth-color/{z}/{x}/{y}.jpg', {
-    tileSize: 256,
-    tms: true
-  });
-  var toner = WE.tileLayer('http://tile.stamen.com/toner/{z}/{x}/{y}.png', {
+  var tiles = WE.tileLayer('https://stamen-tiles.a.ssl.fastly.net/terrain/{z}/{x}/{y}.png', {
     attribution: 'Map tiles by Stamen Design, under CC BY 3.0. Data by OpenStreetMap, under CC BY SA.',
-    opacity: 0.6
+    opacity: 1.0
   });
 
   // Set up earth.
@@ -58,8 +53,7 @@ $(function () {
     tilting: true,
     zoom: 4
   });
-  natural.addTo(earth);
-  toner.addTo(earth);
+  tiles.addTo(earth);
 
   // Poll location on mouseup, checking weather and updating granulator params if the location has changed.
   checkWeather(earth, updateWeather);
